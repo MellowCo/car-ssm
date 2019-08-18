@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.li.mapper.UserMapper">
+
+    <!--查找所有用户-->
+    <select id="findAllUser" resultType="User">
+        select * from user
+    </select>
+
+    <!--根据email查看用户是否存在-->
+    <select id="findUser" resultType="User" parameterType="String">
+        select * from user where email like #{email}
+    </select>
+
+    <!--根据用户名和密码查找用户-->
+    <select id="findUserAndPwd" resultType="Integer">
+        select count(1) from user where email like #{email} and pwd like #{pwd}
+    </select>
+
+    <!--根据用户名，返回用户状态-->
+    <select id="findUserStatus" resultType="Integer">
+        select status from user where email like #{email}
+    </select>
+
+    <!--分页加模糊查询-->
+    <select id="pageUser" resultType="User">
+        select * from user
+        <where>
+            <if test="user.email != null and user.email != ''">
+                and email like '%${user.email}%'
+            </if>
+
+            <if test="user.username != null and user.username != ''">
+                and username like '%${user.username}%'
+            </if>
+
+            <if test="user.tel != null and user.tel != ''">
+                and tel like '%${user.tel}%'
+            </if>
+
+            <if test="user.status != null and user.status != ''">
+                and status = #{user.status}
+            </if>
+        </where>
+        limit #{start},#{size}
+    </select>
+
+    <!--返回模糊查询的数据-->
+    <select id="pageUserSize" resultType="int" parameterType="User">
+        select count(1) from user
+        <where>
+            <if test="email != null and email != ''">
+                and email like '%${email}%'
+            </if>
+
+            <if test="username != null and username != ''">
+                and username like '%${username}%'
+            </if>
+
+            <if test="tel != null and tel != ''">
+                and tel like '%${tel}%'
+            </if>
+
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!--添加用户-->
+    <insert id="insertUser" parameterType="User">
+        insert into user values(#{email},#{username},#{pwd},#{sex},#{tel},#{address},1)
+    </insert>
+
+    <!--更新用户信息-->
+    <update id="updateUser" parameterType="User">
+        update user
+        <set>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+
+            <if test="pwd != null and pwd != ''">
+                pwd = #{pwd},
+            </if>
+
+            <if test="sex != null and sex != ''">
+                sex = #{sex},
+            </if>
+
+            <if test="tel != null and tel != ''">
+                tel = #{tel},
+            </if>
+
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+        </set >
+        where email = #{email}
+    </update>
+
+    <!--删除用户-->
+    <delete id="delUser">
+        delete from user where email in
+        <foreach collection="array" item="value" open="(" separator="," close=")">
+            #{value}
+        </foreach>
+    </delete>
+
+    <!--更新用户 黑名单状态-->
+    <update id="updateStatus">
+        update user set status = 1 where email in
+        <foreach collection="array" item="value" open="(" separator="," close=")">
+            #{value}
+        </foreach>
+    </update>
+
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.li.mapper.CorderMapper">
+    <!--添加订单-->
+    <insert id="insertOrder">
+        insert into corder values (null,#{cid},#{cname},#{email},#{crent},#{taketime},#{gettime},1)
+    </insert>
+
+    <!--查询订单-->
+    <select id="findOrder" resultType="Corder">
+        select * from corder where email like #{email} and status = #{status}
+    </select>
+
+    <!---->
+    <select id="pageCorder" resultType="Corder">
+        select * from corder
+        <where>
+            <if test="corder.cname != null and corder.cname != ''">
+                and cname like '%${corder.cname}%'
+            </if>
+
+            <if test="corder.crent != null and corder.crent != ''">
+                and crent like '%${corder.crent}%'
+            </if>
+
+            <if test="corder.status != null and corder.status != ''">
+                and status = #{corder.status}
+            </if>
+        </where>
+        limit #{start},#{size}
+    </select>
+
+    <!--返回模糊查询的数据-->
+    <select id="pageSize" resultType="int" parameterType="Corder">
+        select count(1) from corder
+        <where>
+            <if test="crent != null and crent != ''">
+                and crent like '%${crent}%'
+            </if>
+
+            <if test="cname != null and cname != ''">
+                and cname like '%${cname}%'
+            </if>
+
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!---->
+    <update id="updateStatus">
+        update corder set status = -1 where oid = #{oid}
+    </update>
+</mapper>

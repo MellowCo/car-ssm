@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.li.mapper.CarportMapper">
+    <!--车辆分页-->
+    <select id="pageCar" resultType="Carport">
+        select * from carport
+        <where>
+            <if test="carport.cname != null and carport.cname != ''">
+                and cname like '%${carport.cname}%'
+            </if>
+
+            <if test="carport.crent != null and carport.crent != ''">
+                and crent like '%${carport.crent}%'
+            </if>
+
+            <if test="carport.status != null and carport.status != ''">
+                and status = #{carport.status}
+            </if>
+        </where>
+        limit #{start},#{size}
+    </select>
+    
+    <!--返回模糊查询的数据-->
+    <select id="pageSize" resultType="int" parameterType="carport">
+        select count(1) from carport
+        <where>
+            <if test="crent != null and crent != ''">
+                and crent like '%${crent}%'
+            </if>
+
+            <if test="cname != null and cname != ''">
+                and cname like '%${cname}%'
+            </if>
+
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!--更改车辆状态-->
+    <update id="updateStatus">
+        update carport set status = #{status} where cid in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
+    <!--添加车辆-->
+    <insert id="insertCar">
+        insert into carport values (null,#{cimg},#{cinfo},#{cname},#{crent},#{status})
+    </insert>
+
+    <select id="carList" resultType="Carport">
+        select * from carport where status = 1
+        <if test="_parameter == 'desc'">
+            order by crent desc
+        </if>
+
+        <if test="_parameter == 'asc'">
+            order by crent asc
+        </if>
+
+        <if test="_parameter == 'default' or _parameter == null">
+            order by cname asc
+        </if>
+    </select>
+
+    <!--根据车名，模糊查询-->
+    <select id="findCarsByName" resultType="Carport">
+        select * from carport where cname like '%${_parameter}%'
+    </select>
+
+    <!--根据车辆id，返回车辆-->
+    <select id="findCarByID" resultType="Carport">
+        select * from carport where cid = #{cid}
+    </select>
+
+</mapper>

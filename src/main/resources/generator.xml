@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+        <commentGenerator>
+            <!--
+                     suppressAllComments属性值：
+                         true:自动生成实体类、SQL映射文件时没有注释
+                         true:自动生成实体类、SQL映射文件，并附有注释
+                   -->
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+
+        <!-- 数据库连接信息 -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/summer?useSSL=false"
+                        userId="root" password="li1234">
+        </jdbcConnection>
+        <!--
+                  forceBigDecimals属性值：
+                      true:把数据表中的DECIMAL和NUMERIC类型，
+      解析为JAVA代码中的java.math.BigDecimal类型
+                      false(默认):把数据表中的DECIMAL和NUMERIC类型，
+      解析为解析为JAVA代码中的Integer类型
+              -->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+        <!--
+               targetProject属性值:实体类的生成位置
+               targetPackage属性值：实体类所在包的路径
+           -->
+        <javaModelGenerator targetPackage="com.li.domain"
+                            targetProject=".\src\main\java">
+            <!-- trimStrings属性值：
+                      true：对数据库的查询结果进行trim操作
+                      false(默认)：不进行trim操作
+                    -->
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+        <!--
+               targetProject属性值:SQL映射文件的生成位置
+               targetPackage属性值：SQL映射文件所在包的路径
+           -->
+        <sqlMapGenerator targetPackage="com.li.mapper"
+                         targetProject=".\src\main\resources">
+        </sqlMapGenerator>
+        <!-- 生成动态代理的接口  -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.li.mapper" targetProject=".\src\main\java">
+        </javaClientGenerator>
+
+        <!-- 指定数据库表  -->
+        <table tableName="admin"></table>
+        <table tableName="carport"></table>
+        <table tableName="corder"></table>
+        <table tableName="user"></table>
+    </context>
+</generatorConfiguration>
